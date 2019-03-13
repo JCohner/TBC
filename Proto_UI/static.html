@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>TBC • Static Test</title>
+  <meta charset="utf-8">
+  <meta name="viewport"
+     content="width=device-width, initial-scale=1, user-scalable=yes">
+<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	
+	<!--p5 link-->
+	<script src="p5_libraries/p5.js"></script>
+	<script src="p5_libraries/p5.dom.js"></script>
+	<script src="scripts/static.js"></script>
+</head>
+<body>
+ 
+<div class="container">
+  <div class="row mb-3">
+    <div class="col justify-content-center text-center bg-info text-white rounded">
+      <h1><a class="text-white" href="index.html">TBC • Static Test</a></h1>
+    </div>
+  </div>
+	
+	<div class="row justify-content-center">
+		<form class="col-md-10 col-lg-12">
+  		<div class="form-row mb-2">
+    		<div class="col-4">
+      		<input type="number" id="xpos" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="x pos (mm)">
+    		</div>
+    		<div class="col-4">
+      		<input type="number" id="ypos" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="y pos (mm)">
+    		</div>
+				<div class="col-4">
+      		<input type="number" id="zpos" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="z pos (mm)">
+    		</div>
+  		</div>
+		
+			<div class="form-row mb-2">
+    		<div class="col-4">
+      		<input type="number" id="rollval" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="roll (rad)">
+    		</div>
+    		<div class="col-4">
+      		<input type="number" id="pitchval" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="pitch (rad)">
+    		</div>
+				<div class="col-4">
+      		<input type="number" id="yawval" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="yaw (rad)">
+    		</div>
+			</div>
+			
+			<div class="form-row justify-content-center">
+				<div class="col-5" id="t1val">
+					<input type="number" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="t1 - between pose (s)">
+				</div>
+				<div class="col-5" id="t2val">
+					<input type="number" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="t2 - during pose (s)">
+				</div>
+			</div>
+		</form>
+  </div>
+	
+	<div class="row mt-3 justify-content-center mb-3">
+		<div class="col-10">
+			<button type="button" id="beginTest" class="btn btn-primary btn-lg btn-block">Begin Test</button>
+			<button type="button" class="btn btn-secondary btn-lg btn-block">Cancel Test</button>
+		</div>
+	</div>
+</div>
+	
+<div class="container" id="output">
+	<table class="table table-inverse">
+		<thead class="thead-dark">
+				<th scope="row">X</th>
+				<th scope="row">Y</th>
+				<th scope="row">Z</th>
+				<th scope="row">Roll</th>
+				<th scope="row">Pitch</th>
+				<th scope="row">Yaw</th>
+		</thead>
+	</table>
+</div>
+ 
+</body>
+</html>
