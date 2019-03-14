@@ -18,14 +18,14 @@
   --white: #fff;
   --gray: #6c757d;
   --gray-dark: #343a40;
-  --primary: #007bff; /*#4E2A84*/
-  --secondary: #6c757d; /*#836EAA*/
-  --success: #28a745; /*#401F68*/
-  --info: #17a2b8; /*#B6ACD1*/
-  --warning: #ffc107; /*#D8D6D6*/
-  --danger: #dc3545; /*#716C6B*/
-  --light: #f8f9fa; /*#E4E0EE*/
-  --dark: #343a40; /*#342F2E*/
+  --primary: #007bff;
+  --secondary: #6c757d;
+  --success: #28a745;
+  --info: #17a2b8;
+  --warning: #ffc107;
+  --danger: #dc3545;
+  --light: #f8f9fa;
+  --dark: #343a40;
   --breakpoint-xs: 0;
   --breakpoint-sm: 576px;
   --breakpoint-md: 768px;

@@ -48,11 +48,11 @@
 			</div>
 			
 			<div class="form-row justify-content-center">
-				<div class="col-5" id="t1val">
-					<input type="number" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="t1 - between pose (s)">
+				<div class="col-5">
+					<input type="number" id="t1Val" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="t1 - between pose (s)">
 				</div>
-				<div class="col-5" id="t2val">
-					<input type="number" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="t2 - during pose (s)">
+				<div class="col-5">
+					<input type="number" id="t2Val" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="t2 - during pose (s)">
 				</div>
 			</div>
 		</form>
@@ -60,23 +60,41 @@
 	
 	<div class="row mt-3 justify-content-center mb-3">
 		<div class="col-10">
-			<button type="button" id="beginTest" class="btn btn-primary btn-lg btn-block">Begin Test</button>
-			<button type="button" class="btn btn-secondary btn-lg btn-block">Cancel Test</button>
+			<button type="button" id="beginTest" class="btn btn-outline-primary btn-lg btn-block">Begin Test</button>
+			<button type="button" class="btn btn-outline-danger btn-lg btn-block">Cancel Test</button>
 		</div>
 	</div>
 </div>
 	
 <div class="container" id="output">
-	<table class="table table-inverse">
-		<thead class="thead-dark">
-				<th scope="row">X</th>
-				<th scope="row">Y</th>
-				<th scope="row">Z</th>
-				<th scope="row">Roll</th>
-				<th scope="row">Pitch</th>
-				<th scope="row">Yaw</th>
-		</thead>
+	<div class="table-responsive">
+	<table class = "table table-striped table-bordered text-center" id ="outputTable">
+		<tr id="t1">
+			<th scope="row">t1</th>
+		</tr>
+		<tr id="t2">
+			<th scope="row">t2</th>
+		</tr>
+		<tr id="x">
+			<th scope="row">X</th>
+		</tr>
+		<tr id="y">
+			<th scope="row">Y</th>
+		</tr>
+		<tr id="z">
+			<th scope="row">Z</th>
+		</tr>
+		<tr id="roll">
+			<th scope="row">Roll</th>
+		</tr>
+		<tr id="pitch">
+			<th scope="row">Pitch</th>
+		</tr>
+		<tr id="yaw">
+			<th scope="row">Yaw</th>
+		</tr>
 	</table>
+	</div>
 </div>
  
 </body>

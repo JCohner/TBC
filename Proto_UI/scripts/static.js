@@ -1,30 +1,37 @@
-var staticData, container, beginTest, xVal, yVal, zVal, rollVal, pitchVal, yawVal, x_container, y_container, z_container, roll_container, pitch_container, yaw_container;
+var staticData, outputTable, container, beginTest, xVal, yVal, zVal, rollVal, pitchVal, yawVal, t1Val, t2Val, x_container, y_container, z_container, roll_container, pitch_container, yaw_container, t1_container, t2_container;
 
 function setup(){
 	container = document.getElementById('output');
+	outputTable = document.getElementById('outputTable');
 	x_container = document.getElementById('xpos');
 	y_container = document.getElementById('ypos');
 	z_container = document.getElementById('zpos');
 	roll_container = document.getElementById('rollval');
 	pitch_container = document.getElementById('pitchval');
 	yaw_container = document.getElementById('yawval');
+	t1_container = document.getElementById('t1Val');
+	t2_container = document.getElementById('t2Val');
 	
 	beginTest = document.getElementById('beginTest');
+	cancelTest = document.getElementById('cancelTest');
 	
 	beginTest.addEventListener('click',getValues);
+	
 }
 
 function draw(){
 	
 }
 
-function Data(xVal, yVal, zVal, rollVal, pitchVal, yawVal){
+function Data(xVal, yVal, zVal, rollVal, pitchVal, yawVal, t1Val, t2Val){
 	this.x = xVal;
 	this.y = yVal;
 	this.z = zVal;
 	this.roll  = rollVal;
 	this.pitch = pitchVal;
 	this.yaw = yawVal;
+	this.t1 = t1Val;
+	this.t2 = t2Val;
 }
 
 function getValues(){
@@ -36,9 +43,10 @@ function getValues(){
 	rollVal = roll_container.value;
 	pitchVal = pitch_container.value;
 	yawVal = yaw_container.value;
+	t1Val = t1_container.value;
+	t2Val = t2_container.value;
 	
-	
-	staticData = new Data(xVal, yVal, zVal, rollVal, pitchVal, yawVal);
+	staticData = new Data(xVal, yVal, zVal, rollVal, pitchVal, yawVal, t1Val, t2Val);
 	console.log(staticData);
 	
 	showValues();
@@ -46,49 +54,17 @@ function getValues(){
 
 
 function showValues(){
-	var outputTable = document.createElement('table');
-	output.classList.add('table');
-	//output.classList.add('justify-content-center');
-	
-	var outputTableHead = document.createElement('thead');
-	outputText.classList.add('thead-dark');
-	//outputText.classList.add('rounded');
-	//outputText.classList.add('text-center');
-	var outputTableHeadTR = document.createElement('tr');
-	outputTableHead.appendChild(outputTableHeadTR);
 	for (guy in staticData){
-		var outputTableHeadEL = document.createElement('th');
-		outputTableHeadEL.addS
-	}
-
-	container.appendChild(output);
-	output.appendChild(outputText);
-
-	outputText.innerHTML = "Static Values Sent:";
-	
-	for (guy in staticData){
-		console.log(staticData[guy]);
-		var outputItem = document.createElement('ul');
-		outputItem.classList.add('list-group');
-		outputItem.classList.add('justify-content-center');
+		var newEl = document.createElement('td');
+		if (staticData[guy] != ''){
+			newEl.innerHTML = staticData[guy];	
+		} else {
+			newEl.innerHTML = 0;
+		}
 		
-		var staticText = document.createElement('li');
-		staticText.classList.add('list-group-item');
-		staticText.classList.add('col');
-		staticText.classList.add('text-center');
-		staticText.innerHTML = guy;
-		
-		var dynamicText = document.createElement('li');
-		dynamicText.classList.add('list-group-item');
-		dynamicText.classList.add('col');
-		dynamicText.classList.add('text-center');
-		dynamicText.innerHTML = staticData[guy];
-		
-		container.appendChild(outputItem);
-		outputItem.appendChild(staticText);
-		outputItem.appendChild(dynamicText);
-			
-		
+		console.log("trying to get el w ID " + guy + '\n' + "with val " + staticData[guy]);
+		var tableRow = document.getElementById(guy);
+		tableRow.appendChild(newEl);
 	}
 	
 }
