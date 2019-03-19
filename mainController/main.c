@@ -252,12 +252,13 @@ int main(void)
     // and incremented by one each time.
     while(1)
     {
+        unsigned int uIdx;
 
         cThisChar = UARTCharGet(UART0_BASE);
 
         if(cThisChar == 'f')
         {
-            unsigned int uIdx;
+            pui8Msg1Data[3] = 0xFF;
 
             // Print a message to the console showing the message count and the
             // contents of the message being sent.
@@ -283,42 +284,66 @@ int main(void)
 
             // Increment the value in the message data.
             ui32Msg1Data++;
+        }
+        else if(cThisChar == 'r')
+        {
+            pui8Msg1Data[3] = 0xAA;
 
-            if(ui32Msg1Data % 2)
-                pui8Msg1Data[3] = 0xFF;
-            else
-                pui8Msg1Data[3] = 0xAA;
+            // Print a message to the console showing the message count and the
+            // contents of the message being sent.
+            UARTprintf("Sending msg: 0x%02X %02X %02X %02X",
+                       pui8Msg1Data[0], pui8Msg1Data[1], pui8Msg1Data[2],
+                       pui8Msg1Data[3]);
 
-            if(g_bRXFlag)
+            // Send the CAN message using object number 1 (not the same thing as
+            // CAN ID, which is also 1 in this example).  This function will cause
+            // the message to be transmitted right away.
+            CANMessageSet(CAN0_BASE, 1, &sCANMessage1, MSG_OBJ_TYPE_TX);
+
+            // Check the error flag to see if errors occurred
+            if(g_bErrFlag)
             {
-                sCANMessage2.pui8MsgData = pui8Msg2Data;
-
-                // Read the message from the CAN.  Message object number 1 is used
-                // (which is not the same thing as CAN ID).  The interrupt clearing
-                // flag is not set because this interrupt was already cleared in
-                // the interrupt handler.
-                CANMessageGet(CAN0_BASE, 2, &sCANMessage2, 0);
-
-                // Clear the pending message flag so that the interrupt handler can
-                // set it again when the next message arrives.
-                g_bRXFlag = 0;
-
-                // Check to see if there is an indication that some messages were
-                // lost.
-                if(sCANMessage2.ui32Flags & MSG_OBJ_DATA_LOST)
-                {
-                    UARTprintf("CAN message loss detected\n");
-                }
-
-                // Print out the contents of the message that was received.
-                UARTprintf("Msg ID=0x%08X len=%u data=0x",
-                           sCANMessage2.ui32MsgID, sCANMessage2.ui32MsgLen);
-                for(uIdx = 0; uIdx < sCANMessage2.ui32MsgLen; uIdx++)
-                {
-                    UARTprintf("%02X ", pui8Msg2Data[uIdx]);
-                }
-                UARTprintf("total count=%u\n", g_ui32RXMsgCount);
+                UARTprintf(" error - cable connected?\n");
             }
+            else
+            {
+                // If no errors then print the count of message sent
+                UARTprintf(" total count = %u\n", g_ui32TXMsgCount);
+            }
+
+            // Increment the value in the message data.
+            ui32Msg1Data++;
+        }
+
+        if(g_bRXFlag)
+        {
+            sCANMessage2.pui8MsgData = pui8Msg2Data;
+
+            // Read the message from the CAN.  Message object number 1 is used
+            // (which is not the same thing as CAN ID).  The interrupt clearing
+            // flag is not set because this interrupt was already cleared in
+            // the interrupt handler.
+            CANMessageGet(CAN0_BASE, 2, &sCANMessage2, 0);
+
+            // Clear the pending message flag so that the interrupt handler can
+            // set it again when the next message arrives.
+            g_bRXFlag = 0;
+
+            // Check to see if there is an indication that some messages were
+            // lost.
+            if(sCANMessage2.ui32Flags & MSG_OBJ_DATA_LOST)
+            {
+                UARTprintf("CAN message loss detected\n");
+            }
+
+            // Print out the contents of the message that was received.
+            UARTprintf("Msg ID=0x%08X len=%u data=0x",
+                       sCANMessage2.ui32MsgID, sCANMessage2.ui32MsgLen);
+            for(uIdx = 0; uIdx < sCANMessage2.ui32MsgLen; uIdx++)
+            {
+                UARTprintf("%02X ", pui8Msg2Data[uIdx]);
+            }
+            UARTprintf("total count=%u\n", g_ui32RXMsgCount);
         }
     }
 }

@@ -43,7 +43,7 @@
 //! - Channel B - PD7
 //! - Index - PD3
 //*****************************************************************************
-// 100 Hz
+
 #define PERIOD 16000 // Period of PWM signal sent to stepper in clock ticks equal to 1 ms
 
 // Counters to confirm number of messages sent and received are consistent
@@ -181,7 +181,7 @@ int main(void)
     uint32_t ui32Msg2Data;
     uint8_t *pui8Msg2Data;
 
-    int qeiPosition = 0;
+    int qeiPosition = 0, stepDelta = 0;
 
     pui8Msg2Data = (uint8_t *)&ui32Msg2Data;
 
@@ -226,6 +226,9 @@ int main(void)
 
     GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_2 | GPIO_PIN_3);
     GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2);
+
+    qeiPosition = QEIPositionGet(QEI0_BASE);
+
 
     // Enter loop to process received messages.  This loop just checks a flag
     // that is set by the interrupt handler, and if set it reads out the
@@ -276,21 +279,47 @@ int main(void)
             }
             UARTprintf("total count=%u\n", g_ui32RXMsgCount);
 
-            if(pui8Msg1Data[3] == 0xff)
-                GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2);
-            else if(pui8Msg1Data[3] == 0xaa)
-                GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0);
-
-            setDir(1);
-
-            stepCount = 0;
-            PWMPulseWidthSet(PWM0_BASE, PWM_OUT_7, PERIOD/2);
-
-            while(200 != stepCount){;}
-            PWMPulseWidthSet(PWM0_BASE, PWM_OUT_7, 0);
-
             // Reading data from QEI
             qeiPosition = QEIPositionGet(QEI0_BASE);
+            stepDelta = qeiPosition;
+
+            if(pui8Msg1Data[3] == 0xff)
+            {
+                GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2);
+
+                setDir(1);
+
+                stepCount = 0;
+                PWMPulseWidthSet(PWM0_BASE, PWM_OUT_7, PERIOD/2);
+
+                while(200 != stepCount){;}
+                PWMPulseWidthSet(PWM0_BASE, PWM_OUT_7, 0);
+
+                qeiPosition = QEIPositionGet(QEI0_BASE);
+
+                //UARTprintf("QEI position: %d\n", qeiPosition);
+                UARTprintf("Distance traveled: %d\n", abs(stepDelta - qeiPosition));
+            }
+            else if(pui8Msg1Data[3] == 0xaa)
+            {
+                setDir(0);
+
+                GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_6, 0);
+
+                stepCount = 0;
+                PWMPulseWidthSet(PWM0_BASE, PWM_OUT_7, PERIOD/2);
+
+                while(200 != stepCount){;}
+
+                qeiPosition = QEIPositionGet(QEI0_BASE);
+
+                //UARTprintf("QEI position: %d\n", qeiPosition);
+                UARTprintf("Distance traveled: %d\n", abs(stepDelta - qeiPosition));
+
+                PWMPulseWidthSet(PWM0_BASE, PWM_OUT_7, 0);
+            }
+
+            pui8Msg2Data[3] = qeiPosition;
 
             UARTprintf("Sending msg: 0x%02X %02X %02X %02X",
                        pui8Msg2Data[0], pui8Msg2Data[1], pui8Msg2Data[2],
