@@ -1,23 +1,32 @@
-addpath('~/Desktop/EECS495_Robot_Studio/mr')
-input = [0;-pi/9;0;0;0;0];%input=(roll;pitch,yaw;x;y;z)
+function merlet_ik (input)
+addpath('~/Desktop/EECS495_Robot_Studio/merlet/mr')
+
+% input = [0;-pi/9;0;0;0;0];%input=(roll;pitch,yaw;x;y;z)
 
 %configuration suppose the center of platform be the origin of world frame
 r_platform = 7;%platform radius
 r_base = 10;%base radius
 c = 21; %length of linkage
-base_z=-12;%z_coordinate of base
+base_z=-12;%z_coordinate of base, dist platform to base
 
 %relative platform position to home position
 p = zeros(4,6);
-theta = 0;
-for i=1:6
-  p(1,i)=cos(theta)*r_platform;
-  p(2,i)=sin(theta)*r_platform;
-  p(3,i)=0;
-  p(4,i)=1;
-  theta=theta+pi/3;
+theta = pi/12;
+for i=1:3
+  p(1,2*i-1)=cos(theta)*r_platform;
+  p(2,2*i-1)=sin(theta)*r_platform;
+  p(3,2*i-1)=0;
+  p(4,2*i-1)=1;
+  theta=theta+2*pi/3; %increments location of vertices, can hard code for paired vertices
 end
-
+theta = pi/4
+for i=1:3
+  p(1,2*i)=cos(theta)*r_platform;
+  p(2,2*i)=sin(theta)*r_platform;
+  p(3,2*i)=0;
+  p(4,2*i)=1;
+  theta=theta+2*pi/3; %increments location of vertices, can hard code for paired vertices
+end
 
 %relative base position to home position
 b = zeros(3,6)
@@ -26,7 +35,7 @@ for i=1:6
   b(1,i)=cos(theta)*r_base;
   b(2,i)=sin(theta)*r_base;
   b(3,i)=base_z;
-  theta=theta+pi/3;
+  theta=theta+pi/3; 
 end
 
 l_origin = cal_li([0;0;0;0;0;0],p,b,c);
@@ -56,11 +65,14 @@ for i=1:6
     hold on
 end
 
+hold off
+end
+
 function li = cal_li(input,p,b,c)%calculate each leg's position
 %transformation matrix
 v = input;%v=(roll;pitch,yaw;x;y;z)
 se3mat = VecTose3(v);
-T = MatrixExp6(se3mat)
+T = MatrixExp6(se3mat);
 %new platform position after transformation
 global new_p
 new_p = T * p;
