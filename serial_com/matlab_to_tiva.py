@@ -22,3 +22,5 @@ while(testStatus != "Cancel Test"):
 	if (XPosValue != eng.workspace['XPosValue']):
 		XPosValue = eng.workspace['XPosValue']
 		print("XPosValue changed to: " + str(XPosValue))
+		message = XPosValue
+		#ser.write(message.encode())
