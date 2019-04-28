@@ -63,45 +63,37 @@ volatile bool g_bRXFlag = 0;
 //*****************************************************************************
 volatile bool g_bErrFlag = 0;
 
+volatile bool mc0 = 0;
+volatile bool mc1 = 0;
+
+void initCAN(void);
+
 //*****************************************************************************
 //
 // This function sets up UART0 to be used for a console to display information
 // as the example is running.
 //
 //*****************************************************************************
-void
-InitConsole(void)
+void InitConsole(void)
 {
     // Enable GPIO port A which is used for UART0 pins.
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
 
     // Configure the pin muxing for UART0 functions on port A0 and A1.
-    GPIOPinConfigure(GPIO_PA0_U0RX);
-    GPIOPinConfigure(GPIO_PA1_U0TX);
+    GPIOPinConfigure(GPIO_PC4_U1RX);
+    GPIOPinConfigure(GPIO_PC5_U1TX);
 
     // Enable UART0 so that we can configure the clock.
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_UART1);
 
     // Use the internal 16MHz oscillator as the UART clock source.
-    UARTClockSourceSet(UART0_BASE, UART_CLOCK_PIOSC);
+    UARTClockSourceSet(UART1_BASE, UART_CLOCK_PIOSC);
 
     // Select the alternate (UART) function for these pins.
-    GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+    GPIOPinTypeUART(GPIO_PORTC_BASE, GPIO_PIN_4 | GPIO_PIN_5);
 
     // Initialize the UART for console I/O.
-    UARTStdioConfig(0, 115200, 16000000);
-}
-
-//*****************************************************************************
-//
-// This function provides a 1 second delay using a simple polling method.
-//
-//*****************************************************************************
-void
-SimpleDelay(void)
-{
-    // Delay cycles for 1 second
-    SysCtlDelay(16000000 / 3);
+    UARTStdioConfig(1, 115200, 16000000);
 }
 
 //*****************************************************************************
@@ -156,6 +148,16 @@ void CANIntHandler(void)
     {
         // Getting to this point means that the RX interrupt occurred on message object 2
         CANIntClear(CAN0_BASE, 2);
+        mc0 = 1;
+        g_ui32RXMsgCount++;
+        g_bRXFlag = 1;
+        g_bErrFlag = 0;
+    }
+    else if(ui32Status == 3)
+    {
+        // Getting to this point means that the RX interrupt occurred on message object 3
+        CANIntClear(CAN0_BASE, 3);
+        mc1 = 1;
         g_ui32RXMsgCount++;
         g_bRXFlag = 1;
         g_bErrFlag = 0;
@@ -187,48 +189,19 @@ int main(void)
     tCANMsgObject sCANMessage2;
     uint8_t pui8Msg2Data[8];
 
+    tCANMsgObject sCANMessage3;
+    uint8_t pui8Msg3Data[8];
+
     pui8Msg1Data = (uint8_t *)&ui32Msg1Data;
 
     // Set the clocking to run directly from the external crystal/oscillator.
     SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
                    SYSCTL_XTAL_16MHZ);
 
-    // Set up the serial console to use for displaying messages.  This is
-    // just for this example program and is not needed for CAN operation.
+    IntMasterDisable();
+    initCAN();
     InitConsole();
-
-    // For this example CAN0 is used with RX and TX pins on port B4 and B5.
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
-
-    // Configure the GPIO pin muxing to select CAN0 functions for these pins.
-    GPIOPinConfigure(GPIO_PB4_CAN0RX);
-    GPIOPinConfigure(GPIO_PB5_CAN0TX);
-
-    // Enable the alternate function on the GPIO pins.
-    GPIOPinTypeCAN(GPIO_PORTB_BASE, GPIO_PIN_4 | GPIO_PIN_5);
-
-    // The GPIO port and pins have been set up for CAN.  The CAN peripheral
-    // must be enabled.
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_CAN0);
-
-    // Initialize the CAN controller
-    CANInit(CAN0_BASE);
-
-    // Set up the bit rate for the CAN bus.  This function sets up the CAN
-    // bus timing for a nominal configuration.  You can achieve more control
-    // over the CAN bus timing by using the function CANBitTimingSet() instead
-    // of this one, if needed.
-    CANBitRateSet(CAN0_BASE, SysCtlClockGet(), 500000);
-
-    // Enable interrupts on the CAN peripheral.
-    CANIntRegister(CAN0_BASE, CANIntHandler); // if using dynamic vectors
-    CANIntEnable(CAN0_BASE, CAN_INT_MASTER | CAN_INT_ERROR | CAN_INT_STATUS);
-
-    // Enable the CAN interrupt on the processor (NVIC).
-    IntEnable(INT_CAN0);
-
-    // Enable the CAN for operation.
-    CANEnable(CAN0_BASE);
+    IntMasterEnable();
 
     // Initialize the message object that will be used for sending CAN
     // messages.  The message will be 4 bytes that will contain an incrementing
@@ -245,7 +218,13 @@ int main(void)
     sCANMessage2.ui32Flags = MSG_OBJ_RX_INT_ENABLE | MSG_OBJ_USE_ID_FILTER;
     sCANMessage2.ui32MsgLen = 8;
 
+    sCANMessage3.ui32MsgID = 0x3001;
+    sCANMessage3.ui32MsgIDMask = 0;
+    sCANMessage3.ui32Flags = MSG_OBJ_RX_INT_ENABLE | MSG_OBJ_USE_ID_FILTER;
+    sCANMessage3.ui32MsgLen = 8;
+
     CANMessageSet(CAN0_BASE, 2, &sCANMessage2, MSG_OBJ_TYPE_RX);
+    CANMessageSet(CAN0_BASE, 3, &sCANMessage3, MSG_OBJ_TYPE_RX);
 
     // Enter loop to send messages.  A new message will be sent once per
     // second.  The 4 bytes of message content will be treated as an uint32_t
@@ -254,11 +233,15 @@ int main(void)
     {
         unsigned int uIdx;
 
-        cThisChar = UARTCharGet(UART0_BASE);
+        cThisChar = UARTCharGet(UART1_BASE);
 
-        if(cThisChar == 'f')
+        if(cThisChar == '2')
         {
-            pui8Msg1Data[3] = 0xFF;
+            pui8Msg1Data[0] = 0x02;
+
+            // This is the desired position
+            cThisChar = UARTCharGet(UART1_BASE);
+            pui8Msg1Data[3] = cThisChar;
 
             // Print a message to the console showing the message count and the
             // contents of the message being sent.
@@ -266,9 +249,7 @@ int main(void)
                        pui8Msg1Data[0], pui8Msg1Data[1], pui8Msg1Data[2],
                        pui8Msg1Data[3]);
 
-            // Send the CAN message using object number 1 (not the same thing as
-            // CAN ID, which is also 1 in this example).  This function will cause
-            // the message to be transmitted right away.
+            // Send the CAN message using object number 1
             CANMessageSet(CAN0_BASE, 1, &sCANMessage1, MSG_OBJ_TYPE_TX);
 
             // Check the error flag to see if errors occurred
@@ -285,9 +266,13 @@ int main(void)
             // Increment the value in the message data.
             ui32Msg1Data++;
         }
-        else if(cThisChar == 'r')
+        else if(cThisChar == '3')
         {
-            pui8Msg1Data[3] = 0xAA;
+            pui8Msg1Data[0] = 0x03;
+
+            // This is the desired position
+            cThisChar = UARTCharGet(UART1_BASE);
+            pui8Msg1Data[3] = cThisChar;
 
             // Print a message to the console showing the message count and the
             // contents of the message being sent.
@@ -323,27 +308,89 @@ int main(void)
             // (which is not the same thing as CAN ID).  The interrupt clearing
             // flag is not set because this interrupt was already cleared in
             // the interrupt handler.
-            CANMessageGet(CAN0_BASE, 2, &sCANMessage2, 0);
+            if(mc0)
+                CANMessageGet(CAN0_BASE, 2, &sCANMessage2, 0);
+            else if(mc1)
+                CANMessageGet(CAN0_BASE, 3, &sCANMessage3, 0);
 
             // Clear the pending message flag so that the interrupt handler can
             // set it again when the next message arrives.
             g_bRXFlag = 0;
 
-            // Check to see if there is an indication that some messages were
-            // lost.
-            if(sCANMessage2.ui32Flags & MSG_OBJ_DATA_LOST)
+            if(mc0)
             {
-                UARTprintf("CAN message loss detected\n");
-            }
+                // Check to see if there is an indication that some messages were
+                // lost.
+                if(sCANMessage2.ui32Flags & MSG_OBJ_DATA_LOST)
+                {
+                    UARTprintf("CAN message loss detected\n");
+                }
 
-            // Print out the contents of the message that was received.
-            UARTprintf("Msg ID=0x%08X len=%u data=0x",
-                       sCANMessage2.ui32MsgID, sCANMessage2.ui32MsgLen);
-            for(uIdx = 0; uIdx < sCANMessage2.ui32MsgLen; uIdx++)
-            {
-                UARTprintf("%02X ", pui8Msg2Data[uIdx]);
+                // Print out the contents of the message that was received.
+                UARTprintf("Msg ID=0x%08X len=%u data=0x",
+                           sCANMessage2.ui32MsgID, sCANMessage2.ui32MsgLen);
+                for(uIdx = 0; uIdx < sCANMessage2.ui32MsgLen; uIdx++)
+                {
+                    UARTprintf("%02X ", pui8Msg2Data[uIdx]);
+                }
+                UARTprintf("total count=%u\n", g_ui32RXMsgCount);
+                mc0 = 0;
             }
-            UARTprintf("total count=%u\n", g_ui32RXMsgCount);
+            else if(mc1)
+            {
+                // Check to see if there is an indication that some messages were
+                // lost.
+                if(sCANMessage3.ui32Flags & MSG_OBJ_DATA_LOST)
+                {
+                    UARTprintf("CAN message loss detected\n");
+                }
+
+                // Print out the contents of the message that was received.
+                UARTprintf("Msg ID=0x%08X len=%u data=0x",
+                           sCANMessage3.ui32MsgID, sCANMessage3.ui32MsgLen);
+                for(uIdx = 0; uIdx < sCANMessage3.ui32MsgLen; uIdx++)
+                {
+                    UARTprintf("%02X ", pui8Msg3Data[uIdx]);
+                }
+                UARTprintf("total count=%u\n", g_ui32RXMsgCount);
+                mc1 = 0;
+            }
         }
     }
+}
+
+void initCAN()
+{
+    // For this example CAN0 is used with RX and TX pins on port B4 and B5.
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+
+    // Configure the GPIO pin muxing to select CAN0 functions for these pins.
+    GPIOPinConfigure(GPIO_PB4_CAN0RX);
+    GPIOPinConfigure(GPIO_PB5_CAN0TX);
+
+    // Enable the alternate function on the GPIO pins.
+    GPIOPinTypeCAN(GPIO_PORTB_BASE, GPIO_PIN_4 | GPIO_PIN_5);
+
+    // The GPIO port and pins have been set up for CAN.  The CAN peripheral
+    // must be enabled.
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_CAN0);
+
+    // Initialize the CAN controller
+    CANInit(CAN0_BASE);
+
+    // Set up the bit rate for the CAN bus.  This function sets up the CAN
+    // bus timing for a nominal configuration.  You can achieve more control
+    // over the CAN bus timing by using the function CANBitTimingSet() instead
+    // of this one, if needed.
+    CANBitRateSet(CAN0_BASE, SysCtlClockGet(), 500000);
+
+    // Enable interrupts on the CAN peripheral.
+    CANIntRegister(CAN0_BASE, CANIntHandler); // if using dynamic vectors
+    CANIntEnable(CAN0_BASE, CAN_INT_MASTER | CAN_INT_ERROR | CAN_INT_STATUS);
+
+    // Enable the CAN interrupt on the processor (NVIC).
+    IntEnable(INT_CAN0);
+
+    // Enable the CAN for operation.
+    CANEnable(CAN0_BASE);
 }
