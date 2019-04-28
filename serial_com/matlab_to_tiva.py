@@ -24,7 +24,7 @@ message = 0 #make sure message is defined before its called
 
 #pdb.set_trace()
 
-while(testStatus != "Cancel Test"):
+while (testStatus != "Cancel Test"):
 	testStatus = eng.workspace['selectedButton']
 	#print(testStatus)
 	if ((XPosValue != eng.workspace['XPosValue']) & (testStatus == "Begin Test")):
@@ -32,7 +32,7 @@ while(testStatus != "Cancel Test"):
 		message = str(XPosValue)[:7]
 		sent_messages.append(message)
 		print("XPosValue changed to: " + message)
-
+		#write to a six element array
 		ser.write(message.encode())
 
 	if ((testStatus == "Prepare Test") & (len(sent_messages) != 0)):
