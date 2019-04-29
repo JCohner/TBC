@@ -1,5 +1,5 @@
 function merlet_ik (input)
-addpath('~/Desktop/EECS495_Robot_Studio/merlet/mr')
+addpath('mr')
 
 % input = [0;-pi/9;0;0;0;0];%input=(roll;pitch,yaw;x;y;z)
 
@@ -19,7 +19,7 @@ for i=1:3
   p(4,2*i-1)=1;
   theta=theta+2*pi/3; %increments location of vertices, can hard code for paired vertices
 end
-theta = pi/4
+theta = pi/4;
 for i=1:3
   p(1,2*i)=cos(theta)*r_platform;
   p(2,2*i)=sin(theta)*r_platform;

@@ -1,7 +1,7 @@
 import serial
 ser = serial.Serial()
 ser.baudrate = 115200
-ser.port = 'COM22'
+ser.port = 'COM15'
 
 ser.open()
 message = 'Hello World!'

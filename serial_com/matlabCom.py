@@ -9,12 +9,12 @@ import matlab.engine
 	#matlab.engine.start_matlab()
 
 name = matlab.engine.find_matlab()
-
+print("matlab found w name: " + str(name[0]))
 eng = matlab.engine.connect_matlab(name[0]) #i like using the name 'ayoTown'
 print(eng.workspace)
 
 print("we're gonna add an element\n")
-eng.workspace['added_Shiii'] = 'we added'
+eng.workspace['is_this_still_connected?'] = 'Yessir'
 
 print(eng.workspace)
 

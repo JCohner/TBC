@@ -16,6 +16,7 @@ function setup(){
 	cancelTest = document.getElementById('cancelTest');
 	
 	beginTest.addEventListener('click',getValues);
+	cancelTest.addEventListener('click', removeValues);
 	
 }
 
@@ -52,7 +53,6 @@ function getValues(){
 	showValues();
 }
 
-
 function showValues(){
 	for (guy in staticData){
 		var newEl = document.createElement('td');
@@ -65,6 +65,13 @@ function showValues(){
 		console.log("trying to get el w ID " + guy + '\n' + "with val " + staticData[guy]);
 		var tableRow = document.getElementById(guy);
 		tableRow.appendChild(newEl);
+	}	
+}
+
+function removeValues(){
+	for (guy in staticData){
+		var tableRow = document.getElementById(guy);
+		console.log(guy);
+		tableRow.removeChild();
 	}
-	
 }

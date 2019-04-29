@@ -37,13 +37,13 @@
 		
 			<div class="form-row mb-2">
     		<div class="col-4">
-      		<input type="number" id="rollval" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="roll (rad)">
+      		<input type="number" id="rollval" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="roll (deg)">
     		</div>
     		<div class="col-4">
-      		<input type="number" id="pitchval" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="pitch (rad)">
+      		<input type="number" id="pitchval" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="pitch (deg)">
     		</div>
 				<div class="col-4">
-      		<input type="number" id="yawval" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="yaw (rad)">
+      		<input type="number" id="yawval" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="yaw (deg)">
     		</div>
 			</div>
 			
@@ -61,7 +61,7 @@
 	<div class="row mt-3 justify-content-center mb-3">
 		<div class="col-10">
 			<button type="button" id="beginTest" class="btn btn-outline-primary btn-lg btn-block">Begin Test</button>
-			<button type="button" class="btn btn-outline-danger btn-lg btn-block">Cancel Test</button>
+			<button type="button" id="cancelTest" class="btn btn-outline-danger btn-lg btn-block">Cancel Test</button>
 		</div>
 	</div>
 </div>
@@ -70,28 +70,28 @@
 	<div class="table-responsive">
 	<table class = "table table-striped table-bordered text-center" id ="outputTable">
 		<tr id="t1">
-			<th scope="row">t1</th>
+			<th scope="row">t1 (s)</th>
 		</tr>
 		<tr id="t2">
-			<th scope="row">t2</th>
+			<th scope="row">t2 (s)</th>
 		</tr>
 		<tr id="x">
-			<th scope="row">X</th>
+			<th scope="row">X (mm)</th>
 		</tr>
 		<tr id="y">
-			<th scope="row">Y</th>
+			<th scope="row">Y (mm)</th>
 		</tr>
 		<tr id="z">
-			<th scope="row">Z</th>
+			<th scope="row">Z (mm)</th>
 		</tr>
 		<tr id="roll">
-			<th scope="row">Roll</th>
+			<th scope="row">Roll (deg)</th>
 		</tr>
 		<tr id="pitch">
-			<th scope="row">Pitch</th>
+			<th scope="row">Pitch (deg)</th>
 		</tr>
 		<tr id="yaw">
-			<th scope="row">Yaw</th>
+			<th scope="row">Yaw (deg)</th>
 		</tr>
 	</table>
 	</div>
