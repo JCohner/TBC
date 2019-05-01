@@ -5,8 +5,8 @@ import pdb
 import serial
 ser = serial.Serial()
 ser.baudrate = 115200
-ser.port = 'COM15'
-ser.open()
+ser.port = 'COM26'
+#ser.open() #OPEN THIS FOR REAL TEST
 
 #MATLAB Initialization
 import matlab.engine
@@ -18,25 +18,42 @@ XPosValue = eng.workspace['XPosValue']
 testStatus = eng.workspace['selectedButton']
 
 sent_messages = []
+motor_values = []
+motor_values.append(('XPosValue', eng.workspace['XPosValue'], 0))
+motor_values.append(('YPosValue', eng.workspace['YPosValue'], 1))
+motor_values.append(('ZPosValue', eng.workspace['ZPosValue'], 2))
+motor_values.append(('rollValue', eng.workspace['rollValue'], 3))
+motor_values.append(('yawValue', eng.workspace['yawValue'], 4))
+motor_values.append(('pitchValue', eng.workspace['pitchValue'], 5))
 
-print(testStatus)
-message = 0 #make sure message is defined before its called
+print(motor_values)
 
+#message = 0 #make sure message is defined before its called
+#import pdb
 #pdb.set_trace()
 
 while (testStatus != "Cancel Test"):
 	testStatus = eng.workspace['selectedButton']
-	#print(testStatus)
-	if ((XPosValue != eng.workspace['XPosValue']) & (testStatus == "Begin Test")):
-		XPosValue = eng.workspace['XPosValue']
-		message = str(XPosValue)[:7]
-		sent_messages.append(message)
-		print("XPosValue changed to: " + message)
-		#write to a six element array
-		ser.write(message.encode())
+#	#print(testStatus)
+	for motor in motor_values:
+		if (motor[1] != eng.workspace[motor[0]]):
+#			ser.write(str(motor[2]).encode())
+			print(motor[2])
+			
+			motor_values[motor[2]] = (motor[0] ,eng.workspace[motor[0]], motor[2])
+			motor = motor_values[motor[2]] 
+			#ser.write(str(motor[1]).encode())
+			print(motor[1])
+#			ser.write(b'\n')
 
-	if ((testStatus == "Prepare Test") & (len(sent_messages) != 0)):
-		#pdb.set_trace()
-		sent_messages.pop(0)
-		received = ser.read(len(message.encode()))
-		print('Message received: ' + received.decode())
+#	if ((XPosValue != eng.workspace['XPosValue']) & (testStatus == "Begin Test")):
+#		XPosValue = eng.workspace['XPosValue']
+# ##		sent_messages.append(message)
+# 		print("XPosValue changed to: " + message)
+# 		#write to a six element array
+# 		ser.write(message.encode())
+#	if ((testStatus == "Prepare Test") & (ser.in_waiting!= 0)):
+# 		#pdb.set_trace()
+# 		sent_messages.pop(0)
+#		received = ser.read_until('\r\n', 20)
+#		print('Message received: ' + received.decode())
