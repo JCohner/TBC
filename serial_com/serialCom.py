@@ -1,3 +1,4 @@
+#HELLO WORLD FOR SERIAL COMMUNCIATION VIA PYTHON
 import serial
 ser = serial.Serial()
 ser.baudrate = 115200
