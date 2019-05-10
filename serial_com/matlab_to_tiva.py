@@ -6,7 +6,7 @@ import serial
 ser = serial.Serial()
 ser.baudrate = 115200
 ser.port = 'COM26'
-#ser.open() #OPEN THIS FOR REAL TEST
+ser.open() #OPEN THIS FOR REAL TEST
 
 #MATLAB Initialization
 import matlab.engine
@@ -37,14 +37,18 @@ while (testStatus != "Cancel Test"):
 #	#print(testStatus)
 	for motor in motor_values:
 		if (motor[1] != eng.workspace[motor[0]]):
-#			ser.write(str(motor[2]).encode())
-			print(motor[2])
+			ser.write(str(motor[2]).encode())
+			
 			
 			motor_values[motor[2]] = (motor[0] ,eng.workspace[motor[0]], motor[2])
 			motor = motor_values[motor[2]] 
-			#ser.write(str(motor[1]).encode())
+			ser.write(b' ')
+			ser.write(str(motor[1]).encode())
+			print(motor[2])
+			#print(" ")
 			print(motor[1])
-#			ser.write(b'\n')
+			#print('\n')
+			ser.write(b'\n')
 
 #	if ((XPosValue != eng.workspace['XPosValue']) & (testStatus == "Begin Test")):
 #		XPosValue = eng.workspace['XPosValue']
