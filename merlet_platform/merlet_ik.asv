@@ -3,7 +3,7 @@ addpath('~/Desktop/EECS495_Robot_Studio/merlet/mr')
 micron_num =10000;
 input(4)=input(4)*micron_num;
 input(5)=input(5)*micron_num;
-input(6)=input(6)*micron_num;
+input(6)=input(4)*micron_num;
 % input = [0;-pi/9;0;0;0;0];%input=(roll;pitch,yaw;x;y;z)
 %print("the input is:",input);
 %configuration suppose the center of platform be the origin of world frame
