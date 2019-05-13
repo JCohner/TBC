@@ -7,12 +7,11 @@ input(6)=input(6)*micron_num;
 % input = [0;-pi/9;0;0;0;0];%input=(roll;pitch,yaw;x;y;z)
 %print("the input is:",input);
 %configuration suppose the center of platform be the origin of world frame
-fraction = 0.5;
-r_platform = 77470;%platform radius
-d_joint_plaform = 17780/2;%distance of adjacent joint on platform
-r_base = 142240;%base radius
-d_joint_base = 58000/2;
-c = 130000; %length of linkage
+r_platform = 50000;%platform radius
+d_joint_plaform = 60000/2;%17780/2;%distance of adjacent joint on platform
+r_base = 80000;%base radius
+d_joint_base = 60000/2;
+c = 70000; %length of linkage
 base_z=-250000;%z_coordinate of base, dist platform to base
 
 %relative platform position to home position
