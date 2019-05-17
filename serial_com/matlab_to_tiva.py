@@ -27,6 +27,7 @@ eng.workspace['leg_4_value'] = 0
 eng.workspace['leg_5_value'] = 0
 eng.workspace['leg_6_value'] = 0
 eng.workspace['mode'] = 0
+
 mode = 0
 testStatus = 0
 
@@ -83,6 +84,8 @@ if (mode == 'dynamic'):
 
 while((testStatus != "Cancel Test")&(mode == "motorTest")):
 	testStatus = eng.workspace['selectedButton']
+	leg_lengths = eng.workspace.['l_new']
+	print(leg_lengths)
 	for motor in motor_values:
 		if (motor[1] != eng.workspace[motor[0]]):
 			motor_values[motor[2]] = (motor[0] ,eng.workspace[motor[0]], motor[2])
