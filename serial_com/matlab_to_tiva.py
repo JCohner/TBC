@@ -6,7 +6,7 @@ import serial
 ser = serial.Serial()
 ser.baudrate = 115200
 ser.port = 'COM3'
-#ser.open() #OPEN THIS FOR REAL TEST
+ser.open() #OPEN THIS FOR REAL TEST
 
 #MATLAB Initialization
 import matlab.engine
@@ -69,10 +69,10 @@ if (mode == 'dynamic'):
 	for i in range(len(matrix)):
 		for j in range(6):
 
-			# ser.write(str(j).encode())
-			# ser.write(b' ')
-			# ser.write(str(matrix[i][j]).encode())
-			# ser.write(b'\n')
+			ser.write(str(j).encode())
+			ser.write(b' ')
+			ser.write(str(matrix[i][j]).encode())
+			ser.write(b'\n')
 
 			print(str(j).encode())
 			print(b' ')
@@ -91,10 +91,13 @@ while ((testStatus != "Cancel Test") & (mode == 'static')):
 		if (motor[1] != eng.workspace[motor[0]]):
 			motor_values[motor[2]] = (motor[0] ,eng.workspace[motor[0]], motor[2])
 			motor = motor_values[motor[2]] 
-			# ser.write(str(motor[2]).encode())
-			# ser.write(b' ')
-			# ser.write(str(motor[1]).encode())
-			# ser.write(b'\n')
+			
+			ser.write(str(motor[2]).encode())
+			ser.write(b' ')
+			# if (int(motor[2]) == 5 & int(motor[1]) < 100):
+			# 	motor[1] = 100	
+			ser.write(str(motor[1]).encode())
+			ser.write(b'\n')
 
 			print(motor[2])
 			#print(" ")
