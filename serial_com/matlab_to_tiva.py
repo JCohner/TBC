@@ -81,8 +81,24 @@ if (mode == 'dynamic'):
 		time.sleep(0.5)	
 	#gtiprint(matrix)
 
+while((testStatus != "Cancel Test")&(mode == "motorTest")):
+	testStatus = eng.workspace['selectedButton']
+	for motor in motor_values:
+		if (motor[1] != eng.workspace[motor[0]]):
+			motor_values[motor[2]] = (motor[0] ,eng.workspace[motor[0]], motor[2])
+			motor = motor_values[motor[2]] 
+			
+			ser.write(str(motor[2]).encode())
+			ser.write(b' ')
+			# if (int(motor[2]) == 5 & int(motor[1]) < 100):
+			# 	motor[1] = 100	
+			ser.write(str(motor[1]).encode())
+			ser.write(b'\n')
 
-
+			print(motor[2])
+			#print(" ")
+			print(motor[1])
+			#print('\n')
 
 while ((testStatus != "Cancel Test") & (mode == 'static')):
 	testStatus = eng.workspace['selectedButton']
