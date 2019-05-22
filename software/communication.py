@@ -103,6 +103,9 @@ while (bool(connect)):
 			if not static_test_state:
 				print("Static Test Ended, Prepare Different Mode if Desired")
 
+	while((bool(connect)) & (mode == 'dynamic')):
+		#grab lnew like before
+		print('in dynamic mode binch')
 
 
 print('program end!')
