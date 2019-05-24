@@ -91,21 +91,20 @@ while (bool(connect)):
 		connect = eng.workspace['connect']
 		static_test_state = eng.workspace['static_test_state']
 		if (static_test_state):
+			#TODO: write function that checks all motor values
 			if (motor_values[0][1] != eng.workspace['leg_1_value']):
 				for motor in motor_values:				
 					motor_values[motor[2]] = (motor[0], eng.workspace[motor[0]], motor[2])
 					motor = motor_values[motor[2]] 
 					
-					#ser.write(str(motor[2]).encode())
-					#ser.write(b' ')
-					# if (int(motor[2]) == 5 & int(motor[1]) < 100):
-					# 	motor[1] = 100	
-					#ser.write(str(motor[1]).encode())
-					#ser.write(b'\n')
+					ser.write(str(motor[1]).encode())
+					ser.write(b' ')
+					
 
 					print(motor[2])
 					#print(" ")
 					print(motor[1])
+				ser.write(b'\n')
 			static_test_state = eng.workspace['static_test_state']
 			if not static_test_state:
 				print("Static Test Ended, Prepare Different Mode if Desired")
@@ -129,16 +128,17 @@ while (bool(connect)):
 				for i in range(len(matrix)):
 					for j in range(6):
 
-						# ser.write(str(j).encode())
-						# ser.write(b' ')
+						
 						# ser.write(str(matrix[i][j]).encode())
-						# ser.write(b'\n')
+						# ser.write(b' ')
 
 						print(str(j).encode())
 						print(b' ')
 						#print(str(matrix[i][j]).encode())
 						#print(b'\n')
 					time.sleep(0.5)	
+					ser.write(b'\n')
+				
 				#set flag to 0 after execute demo dynamic
 				eng.workspace['dynamic_demo_flag'] = 0
 
