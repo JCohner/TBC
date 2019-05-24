@@ -97,7 +97,7 @@ while (bool(connect)):
 					motor_values[motor[2]] = (motor[0], eng.workspace[motor[0]], motor[2])
 					motor = motor_values[motor[2]] 
 					
-					ser.write(str(motor[1]).encode())
+					ser.write(str(int(motor[1])).encode())
 					ser.write(b' ')
 					
 
