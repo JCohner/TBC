@@ -7,8 +7,8 @@ import time
 import serial
 ser = serial.Serial()
 ser.baudrate = 115200
-ser.port = 'COM3' #Rename this to whatever port the device shows up as
-#ser.open() #OPEN THIS FOR REAL TEST
+ser.port = '/dev/tty.usbserial-DN062JGN' #Rename this to whatever port the device shows up as
+ser.open() #OPEN THIS FOR REAL TEST
 
 ##MATLAB Initialization #OLD!
 # import matlab.engine
@@ -91,21 +91,20 @@ while (bool(connect)):
 		connect = eng.workspace['connect']
 		static_test_state = eng.workspace['static_test_state']
 		if (static_test_state):
-			for motor in motor_values:
-				if (motor[1] != eng.workspace[motor[0]]):
-					motor_values[motor[2]] = (motor[0] ,eng.workspace[motor[0]], motor[2])
+			#TODO: write function that checks all motor values
+			if (motor_values[0][1] != eng.workspace['leg_1_value']):
+				for motor in motor_values:				
+					motor_values[motor[2]] = (motor[0], eng.workspace[motor[0]], motor[2])
 					motor = motor_values[motor[2]] 
 					
-					#ser.write(str(motor[2]).encode())
-					#ser.write(b' ')
-					# if (int(motor[2]) == 5 & int(motor[1]) < 100):
-					# 	motor[1] = 100	
-					#ser.write(str(motor[1]).encode())
-					#ser.write(b'\n')
+					ser.write(str(int(motor[1])).encode())
+					ser.write(b' ')
+					
 
 					print(motor[2])
 					#print(" ")
-					print(motor[1])
+					print(int(motor[1]))
+				ser.write(b'\n')
 			static_test_state = eng.workspace['static_test_state']
 			if not static_test_state:
 				print("Static Test Ended, Prepare Different Mode if Desired")
@@ -133,14 +132,46 @@ while (bool(connect)):
 						# ser.write(b' ')
 						# ser.write(str(matrix[i][j]).encode())
 						# ser.write(b'\n')
+						ser.write(str(int(matrix[i][j])).encode())
+						ser.write(b' ')
 
 						print(str(j).encode())
 						print(b' ')
-						print(str(matrix[i][j]).encode())
+						print(str(int(matrix[i][j])).encode())
 						print(b'\n')
-					time.sleep(0.5)	
+					ser.write(b'\n')
+					time.sleep(0.2)	
 				#set flag to 0 after execute demo dynamic
 				eng.workspace['dynamic_demo_flag'] = 0
+
+		if dynamic_demo_flag==2:
+			#matrix = eng.workspace['demo_dynamic_matrix']
+			matrix=eng.load('demo2_dynamic_matrix.mat')
+			#load as a dict, only grab the array part
+			matrix=matrix['demo2_dynamic_matrix']
+			print("get the demo2 matrix")
+			print("demo2 matrix length is",len(matrix))
+			#print("matrix[0][0] is")
+			print(matrix[0][0])
+			for i in range(len(matrix)):
+				print("now it's waypoint:",i)
+				for j in range(6):
+
+					# ser.write(str(j).encode())
+					# ser.write(b' ')
+					# ser.write(str(matrix[i][j]).encode())
+					# ser.write(b'\n')
+					ser.write(str(int(matrix[i][j])).encode())
+					ser.write(b' ')
+
+					# print(str(j).encode())
+					# print(b' ')
+					# print(str(int(matrix[i][j])).encode())
+					# print(b'\n')
+				ser.write(b'\n')
+				time.sleep(0.1)	
+			#set flag to 0 after execute demo dynamic
+			eng.workspace['dynamic_demo_flag'] = 0
 
 		if (dynamic_test_state):
 			matrix = eng.workspace['dynamic_matrix']

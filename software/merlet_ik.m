@@ -24,13 +24,14 @@ input(6)=input(6)*micron_num;
 
 %configuration suppose the center of platform be the origin of world frame
 r_platform = 50000; %50000;%platform radius
-d_joint_plaform = 57150/2;%60000/2;%17780/2;%distance of adjacent joint on platform
+d_joint_plaform = 60000/2;%57150/2;;%17780/2;%distance of adjacent joint on platform
 r_base = 80000;%80000;%base radius
-d_joint_base = 57150/2;%60000/2;
+d_joint_base = 60000/2;%57150/2;%60000/2;
 c = 70000;%132500;%70000; %length of linkage
 %home_position = 0
-base_z=-250000;%z_coordinate of base, dist platform to base
+base_z=-120000;%z_coordinate of base, dist platform to base
 
+%home position set to center of base
 %relative platform position to home position
 p = zeros(4,6);
 theta1 = asin(d_joint_plaform/r_platform);
@@ -76,6 +77,11 @@ end
 %base_z = -l_origin(1);
 [l_new, new_p] = cal_leg_position(input,p,b,c,base_z);
 %l_new;
+%set the [0;0;0;0;0;0] input's leg position as 0,platform and base move up
+%correspondingly.
+l_new=l_new-l_origin;
+new_p(3,:)=new_p(3,:)-l_origin;
+b(3,:)=b(3,:)-l_origin;
 l_relative_move =  l_new - l_origin;
 end
 

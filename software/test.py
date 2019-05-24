@@ -4,19 +4,30 @@ import pdb
 import time
 import scipy.io
 
-#mat = scipy.io.loadmat('./matrix/demo_dynamic_matrix.mat')
-#mat=mat['demo_dynamic_matrix']
-#print(mat.shape)
-#print(mat[0,0])
-#Alternative/Preferred MATLAB opening seq
 import matlab.engine
 eng = matlab.engine.start_matlab('-desktop')
 eng.addpath('mr')
 eng.addpath('matrix')
-#eng.addpath('Desktop/EECS495_Robot_Studio/final_review/TBC/software')
 
 matrix=eng.load('demo_dynamic_matrix.mat')
-print(matrix)
 matrix=matrix['demo_dynamic_matrix']
-print(matrix[0][0])
-print(len(matrix))
+
+for i in range(len(matrix)):
+    for j in range(6):
+
+        # ser.write(str(j).encode())
+        # ser.write(b' ')
+        # ser.write(str(matrix[i][j]).encode())
+        # ser.write(b'\n')
+        #ser.write(str(int(matrix[i][j])).encode())
+        #ser.write(b' ')
+
+        print(str(j).encode())
+        print(b' ')
+        print(str(int(matrix[i][j])).encode())
+        print(b'\n')
+    #ser.write(b'\n')
+    time.sleep(0.5)
+	
+#print(matrix[0][0])
+#print(len(matrix))

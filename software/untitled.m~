@@ -1,4 +1,0 @@
-Dynamic_var_A=0.35;
-
-[dynamic_matrix,dynamic_matrix_new_p,dynamic_matrix_b,dynamic_matrix_l_new]...
-    =generate_dynamic_matrix(Dynamic_var_A,Dynamic_var_Hz);
