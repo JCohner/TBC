@@ -2,7 +2,8 @@
 % Description:
 %     Solve the inverse kinematics given a input Twist.
 % Args:
-%     input(6*1 vector): A twist in order of [roll;pitch;yaw;x;y;z]
+%     input(6*1 vector): A twist in order of [roll;pitch;yaw;x;y;z],x,y,z
+%     in centimeters
 % Returns:
 %     new_p(3*6 matrix): The coordinates of six joints on platform.
 %     ith column represents ith joint. They are determined by input.
@@ -79,10 +80,12 @@ end
 %l_new;
 %set the [0;0;0;0;0;0] input's leg position as 0,platform and base move up
 %correspondingly.
-l_new=l_new-l_origin;
-new_p(3,:)=new_p(3,:)-l_origin;
-b(3,:)=b(3,:)-l_origin;
-l_relative_move =  l_new - l_origin;
+%l_origin;
+translation=15000;
+l_new=l_new-l_origin+translation;
+new_p(3,:)=new_p(3,:)-l_origin+translation;
+b(3,:)=b(3,:)-l_origin+translation;
+l_relative_move = l_new -l_origin+translation;
 end
 
 %function cal_leg_position

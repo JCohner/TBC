@@ -191,7 +191,45 @@ while (bool(connect)):
 			#set flag to 0 after execute one direction dynamic test
 			eng.workspace['dynamic_test_state'] = 0
 
+	# #Foward Kinematics Test
+	# if((bool(connect)) & (mode == 'fk')):
+	# 	fk_test_state = eng.workspace['fk_test_state']
+	# 	if(fk_test_state):
+	# 		if (if_any_value_changed()):
+	# 			for motor in motor_values:				
+	# 				motor_values[motor[2]] = (motor[0], eng.workspace[motor[0]], motor[2])
+	# 				motor = motor_values[motor[2]] 
+					
+	# 				ser.write(str(int(motor[1])).encode())
+	# 				ser.write(b' ')
+					
+
+	# 				print(motor[2])
+	# 				#print(" ")
+	# 				print(int(motor[1]))
+	# 			ser.write(b'\n')
 
 
 print('program end!')
 #eng.quit()
+
+
+
+
+# def if_any_value_changed()
+# 	if (motor_values[0][1] != eng.workspace['leg_1_value'] ||
+# 	    motor_values[1][1] != eng.workspace['leg_2_value'] ||
+# 		motor_values[2][1] != eng.workspace['leg_3_value'] ||
+# 		motor_values[3][1] != eng.workspace['leg_4_value'] ||
+# 		motor_values[4][1] != eng.workspace['leg_5_value'] ||
+# 		motor_values[5][1] != eng.workspace['leg_6_value'] ||):
+# 		return True
+# 	else:
+# 		return False
+
+
+
+
+
+
+
