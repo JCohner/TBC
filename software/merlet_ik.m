@@ -135,7 +135,7 @@ end
 
 
 
-function plot(new_p,l_new,b)
+function merlet_plot(new_p,l_new,b)
 %plot
 %platform
 
