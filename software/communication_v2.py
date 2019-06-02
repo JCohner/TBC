@@ -46,15 +46,15 @@ class matlab_to_tiva():
 				if(mode == 'False'):
 					print("Prepare Desired Testing Mode!\n")
 				elif(mode == 'static'):
-					static_test_state = self.eng.workspace['static_test_state']
-					if(static_test_state==1):
+					begin_test_state = self.eng.workspace['begin_test_state']
+					if(begin_test_state==1):
 						new_leg_length=self.read_leg_length()
 						#som leg length changed
 						if(new_leg_length!=leg_length):
 							self.move(new_leg_length)
 				elif(mode == 'dynamic'):
-					dynamic_test_state = self.eng.workspace['dynamic_test_state']
-					if(dynamic_test_state==1):
+					begin_test_state = self.eng.workspace['begin_test_state']
+					if(begin_test_state==1):
 						dynamic_demo_flag=self.eng.workspace['dynamic_demo_flag']
 						if (dynamic_demo_flag==1):
 							#load a dict contains matrix and time etc,here only grab the array part
@@ -63,8 +63,13 @@ class matlab_to_tiva():
 							#transform form data structure ml.double to np.ndarray, shape of matrix is N*6 
 							matrix=np.asarray(matrix)
 							for i in range(matrix.shape[0]):
-								self.move(matrix[i,:].tolist())
-								time.sleep(0.2)
+								if(self.if_cancel()):
+									break
+								else:
+									self.move(matrix[i,:].tolist())
+									time.sleep(0.2)
+							#set flag to 0 after execute demo dynamic
+							self.eng.workspace['dynamic_demo_flag'] = 0
 						if (dynamic_demo_flag==2):
 							#load a dict contains matrix and time etc,here only grab the array part
 							matrix=self.eng.load('demo2_dynamic_matrix.mat')
@@ -72,6 +77,7 @@ class matlab_to_tiva():
 							for i in range(len(matrix)):
 								self.move(matrix[i,:])
 								time.sleep(0.2)	
+							self.eng.workspace['dynamic_demo_flag'] = 0
 			#refresh every 0.2s
 			time.sleep(0.2)
 
@@ -89,6 +95,11 @@ class matlab_to_tiva():
 			# self.ser.write(b' ')
 		#self.ser.write(b'\n')
 
+	def if_cancel(self):
+		connect = self.eng.workspace['connect']
+		begin_test_state = self.eng.workspace['begin_test_state']
+		if (connect ==0 or begin_test_state==0):
+			return True
 
 if __name__ == '__main__':
 	matlab_to_tiva1=matlab_to_tiva()
