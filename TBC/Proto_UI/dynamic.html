@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TBC • Dynamic Test</title>
+	<meta charset="utf-8">
+  <meta name="viewport"
+     content="width=device-width, initial-scale=1, user-scalable=yes">
+<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+	<div class="container">
+		<div class="row mb-3">
+    	<div class="col justify-content-center text-center bg-info text-white rounded">
+      	<h1><a class="text-white" href="index.html">TBC • Dynamic Test</a></h1>
+    	</div>
+  	</div>
+	</div>
+	
+	<!-- 
+	TODO:
+	SWITCH THIS OUT TO A FORM GROUP, WILL LOOK MUCH BETTER
+	-->
+	<div class="container  rounded">
+		<div class="row justify-content-center">
+			<form class="col-md-10 col-lg-12">
+				<div class="form-row justify-content-center">
+					<div class="col-2 text-center">
+						DOF:
+					</div>
+					<div class="col-2 text-center">
+						A
+					</div>
+					<div class="col-2 text-center align-self-center">
+						* sin(
+					</div>
+					<div class="col-2 text-center">
+						w
+					</div>
+						<div class="col-1 text-center align-self-center">
+						*t +
+					</div>
+					<div class="col-2 text-center">
+						Φ
+					</div>
+					<div class="col-1 text-center align-self-center">
+						)
+					</div>
+				</div>
+				<!-- X -->
+				<div class="form-row justify-content-center bg-primary rounded">
+					<div class="col-2 text-center align-self-center">
+						X:
+					</div>
+					<div class="col-2">
+						<input type="number" step="0.01" min="-20" max="20" class="form-control text-center " placeholder="   A">
+					</div>
+					<div class="col-2 text-center align-self-center">
+						* sin(
+					</div>
+					<div class="col-2">
+						<input type="number" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="   w">
+					</div>
+					<div class="col-1 text-center align-self-center">
+						*t +
+					</div>
+					<div class="col-2">
+						<input type="number" step="0.01" min="-20" max="20" class="form-control text-center" value="0" placeholder="   Φ">
+					</div>
+					<div class="col-1 text-center align-self-center">
+						)
+					</div>
+				</div>
+				
+				<!-- Y -->
+				<div class="form-row justify-content-center bg-secondary rounded mt-2">
+					<div class="col-2 text-center align-self-center">
+						Y:
+					</div>
+					<div class="col-2">
+						<input type="number" step="0.01" min="-20" max="20" class="form-control text-center " placeholder="   A">
+					</div>
+					<div class="col-2 text-center align-self-center">
+						* sin(
+					</div>
+					<div class="col-2">
+						<input type="number" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="   w">
+					</div>
+					<div class="col-1 text-center align-self-center">
+						*t +
+					</div>
+					<div class="col-2">
+						<input type="number" step="0.01" min="-20" max="20" class="form-control text-center" value="0" placeholder="   Φ">
+					</div>
+					<div class="col-1 text-center align-self-center">
+						)
+					</div>
+				</div>
+				
+				<!-- Z -->
+				<div class="form-row justify-content-center bg-primary rounded mt-2">
+					<div class="col-2 text-center align-self-center">
+						Z:
+					</div>
+					<div class="col-2">
+						<input type="number" step="0.01" min="-20" max="20" class="form-control text-center " placeholder="   A">
+					</div>
+					<div class="col-2 text-center align-self-center">
+						* sin(
+					</div>
+					<div class="col-2">
+						<input type="number" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="   w">
+					</div>
+					<div class="col-1 text-center align-self-center">
+						*t +
+					</div>
+					<div class="col-2">
+						<input type="number" step="0.01" min="-20" max="20" class="form-control text-center" value="0" placeholder="   Φ">
+					</div>
+					<div class="col-1 text-center align-self-center">
+						)
+					</div>
+				</div>
+				
+				<!-- Roll -->
+				<div class="form-row justify-content-center bg-secondary rounded mt-2">
+					<div class="col-2 text-center align-self-center">
+						Roll:
+					</div>
+					<div class="col-2">
+						<input type="number" step="0.01" min="-20" max="20" class="form-control text-center " placeholder="   A">
+					</div>
+					<div class="col-2 text-center align-self-center">
+						* sin(
+					</div>
+					<div class="col-2">
+						<input type="number" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="   w">
+					</div>
+					<div class="col-1 text-center align-self-center">
+						*t +
+					</div>
+					<div class="col-2">
+						<input type="number" step="0.01" min="-20" max="20" class="form-control text-center" value="0" placeholder="   Φ">
+					</div>
+					<div class="col-1 text-center align-self-center">
+						)
+					</div>
+				</div>
+				
+				<!-- Pitch -->
+				<div class="form-row justify-content-center bg-primary rounded mt-2">
+					<div class="col-2 text-center align-self-center">
+						Pitch:
+					</div>
+					<div class="col-2">
+						<input type="number" step="0.01" min="-20" max="20" class="form-control text-center " placeholder="   A">
+					</div>
+					<div class="col-2 text-center align-self-center">
+						* sin(
+					</div>
+					<div class="col-2">
+						<input type="number" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="   w">
+					</div>
+					<div class="col-1 text-center align-self-center">
+						*t +
+					</div>
+					<div class="col-2">
+						<input type="number" step="0.01" min="-20" max="20" class="form-control text-center" value="0" placeholder="   Φ">
+					</div>
+					<div class="col-1 text-center align-self-center">
+						)
+					</div>
+				</div>
+				
+				<!-- Yaw -->
+				<div class="form-row justify-content-center bg-secondary rounded mt-2">
+					<div class="col-2 text-center align-self-center">
+						Yaw:
+					</div>
+					<div class="col-2">
+						<input type="number" step="0.01" min="-20" max="20" class="form-control text-center " placeholder="   A">
+					</div>
+					<div class="col-2 text-center align-self-center">
+						* sin(
+					</div>
+					<div class="col-2">
+						<input type="number" step="0.01" min="-20" max="20" class="form-control text-center" placeholder="   w">
+					</div>
+					<div class="col-1 text-center align-self-center">
+						*t +
+					</div>
+					<div class="col-2">
+						<input type="number" step="0.01" min="-20" max="20" class="form-control text-center" value="0" placeholder="   Φ">
+					</div>
+					<div class="col-1 text-center align-self-center">
+						)
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
