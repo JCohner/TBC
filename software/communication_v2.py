@@ -74,10 +74,29 @@ class matlab_to_tiva():
 							#load a dict contains matrix and time etc,here only grab the array part
 							matrix=self.eng.load('demo2_dynamic_matrix.mat')
 							matrix=matrix['demo2_dynamic_matrix']
-							for i in range(len(matrix)):
+							matrix=np.asarray(matrix)
+							for i in range(matrix.shape[0]):
 								self.move(matrix[i,:])
 								time.sleep(0.2)	
 							self.eng.workspace['dynamic_demo_flag'] = 0
+				elif(mode == 'waypoint'):
+					begin_test_state = self.eng.workspace['begin_test_state']
+					if(begin_test_state==1):
+						waypoints_matrix_flag=self.eng.workspace['waypoints_matrix_flag']
+						if (waypoints_matrix_flag==1):
+							matrix=self.eng.workspace['waypoints_matrix']
+							matrix=np.asarray(matrix)
+							print("waypoints_matrix",matrix)
+							print(type(matrix))
+							for i in range(matrix.shape[0]):
+								leg_length=matrix[i,0:5]
+								vel=matrix[i,6:11]
+								t2=matrix[i,12]
+								self.move(leg_length,vel)
+								time.sleep(t2)
+							self.eng.workspace['waypoints_matrix_flag'] = 0
+
+						
 			#refresh every 0.2s
 			time.sleep(0.2)
 
@@ -88,7 +107,7 @@ class matlab_to_tiva():
 		print("leg_length:",leg_length)
 		return leg_length
 
-	def move(self,leg_length):
+	def move(self,leg_length,vel):
 		for length in leg_length:
 			print("length is",length)
 			# self.ser.write(str(int(length)).encode())
