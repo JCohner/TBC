@@ -28,7 +28,7 @@ r_platform = 50000; %50000;%platform radius
 d_joint_plaform = 60000/2;%57150/2;;%17780/2;%distance of adjacent joint on platform
 r_base = 80000;%80000;%base radius
 d_joint_base = 60000/2;%57150/2;%60000/2;
-c = 70000;%132500;%70000; %length of linkage
+c = 127000;%132500;%70000; %length of linkage
 %home_position = 0
 base_z=-120000;%z_coordinate of base, dist platform to base
 
@@ -81,7 +81,7 @@ end
 %set the [0;0;0;0;0;0] input's leg position as 0,platform and base move up
 %correspondingly.
 %l_origin;
-translation=15000;
+translation=30000;
 l_new=l_new-l_origin+translation;
 new_p(3,:)=new_p(3,:)-l_origin+translation;
 b(3,:)=b(3,:)-l_origin+translation;
@@ -134,7 +134,7 @@ angle_max_value =  max(angle);
 end
 
 
-
+% for plot, but not used anymore
 function merlet_plot(new_p,l_new,b)
 %plot
 %platform

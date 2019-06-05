@@ -50,7 +50,7 @@ class matlab_to_tiva():
 					if(begin_test_state==1):
 						new_leg_length=self.read_leg_length()
 						#som leg length changed
-						if(new_leg_length!=leg_length):
+						if(np.array_equal(leg_length, new_leg_length)):
 							self.move(new_leg_length)
 				elif(mode == 'dynamic'):
 					begin_test_state = self.eng.workspace['begin_test_state']
@@ -100,16 +100,26 @@ class matlab_to_tiva():
 			#refresh every 0.2s
 			time.sleep(0.2)
 
-
+	#read the matlab working space and return a np.array of shape (6,)
 	def read_leg_length(self):
-		leg_length=[self.eng.workspace['leg_1_value'],self.eng.workspace['leg_2_value']
-		,self.eng.workspace['leg_3_value'],self.eng.workspace['leg_4_value'],self.eng.workspace['leg_5_value'],self.eng.workspace['leg_6_value']]
+		leg_length=np.array([self.eng.workspace['leg_1_value'],self.eng.workspace['leg_2_value']
+		,self.eng.workspace['leg_3_value'],self.eng.workspace['leg_4_value'],self.eng.workspace['leg_5_value'],self.eng.workspace['leg_6_value']])
 		print("leg_length:",leg_length)
 		return leg_length
 
-	def move(self,leg_length,vel):
-		for length in leg_length:
-			print("length is",length)
+	#send six leg's position with velocities 
+	#Args:leg_length, vel
+	def move(self,leg_length,vel=None):
+		print("leg_length",leg_length)
+		print("leg_length.shape",leg_length.shape)
+		for i in range(6):
+			print(int(leg_length[i]))
+		# 	self.ser.write(str(int(leg_length[i])).encode())
+		# 	self.ser.write(b' ')
+		# self.ser.write(b'\n')
+
+			# for length in leg_length:
+			# print("length is",length)
 			# self.ser.write(str(int(length)).encode())
 			# self.ser.write(b' ')
 		#self.ser.write(b'\n')
