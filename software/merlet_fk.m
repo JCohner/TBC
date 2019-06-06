@@ -1,9 +1,28 @@
+% function merlet_fk
+% Description:
+%     Implement Newton-Raphson algorithm to solve the forward kinematics of merlet platform.
+% Args:
+%     leg_pose: 1*6 row vector represents six legs's positions.
+%
+%     initial_twist: 6*1 vector, initial twist is used as initial guess
+% Returns:
+%     twist: 6*1 vector, predicted twist by Newton-Raphson algorithm.
+%
+%     new_p(3*6 matrix): The coordinates of six joints on platform.
+%     ith column represents ith joint. They are determined by input.
+%               
+%     b(3*6 matrix): The coordinates of six joints on base.
+%     ith column represents ith joint. Once the configuration of whole
+%     platform is determined, it won't change.
+%          
+%     l_new(1*6 row vector): The z position of six leg given current
+%     input(twist).
+%
+%     l_relative_move(1*6 row vector): now is same as l_new.
+%
+%     iter_num: how many iterations algorithm takes to converge
 function [twist,new_p, b, l_new,l_relative_move,iter_num]=merlet_fk(leg_pose,initial_twist)
-%leg_pose 1*6 row vector
 %initialization
-%fprintf(leg_pose);
-%leg_pose
-%initial_twist = [0;0;0;0;0;0];
 twist = initial_twist;
 iter_num=0;
 max_its=100;
@@ -29,8 +48,8 @@ end
 % twist
 % iter_num
 [new_p, b, l_new,l_relative_move] = merlet_ik (twist);
-l_new=leg_pose;
-l_relative_move=leg_pose;
+%l_new=leg_pose;
+%l_relative_move=leg_pose;
 end
 
 function jacobian=generate_jacobian(twist)

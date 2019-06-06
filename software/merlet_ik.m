@@ -14,7 +14,8 @@
 %          
 %     l_new(1*6 row vector): The z position of six leg given current
 %     input(twist).
-%     l_relative_move(1*6 row vector): 
+%
+%     l_relative_move(1*6 row vector): now is same as l_new
 function [new_p, b, l_new,l_relative_move] = merlet_ik (input)
 addpath('~/Desktop/EECS495_Robot_Studio/merlet/mr')
 %Transfer gui x,y,z values from cm to microns.
@@ -30,7 +31,7 @@ r_base = 80000;%80000;%base radius
 d_joint_base = 60000/2;%57150/2;%60000/2;
 c = 127000;%132500;%70000; %length of linkage
 %home_position = 0
-base_z=-120000;%z_coordinate of base, dist platform to base
+base_z=-170000;%z_coordinate of base, dist platform to base
 
 %home position set to center of base
 %relative platform position to home position
@@ -81,7 +82,7 @@ end
 %set the [0;0;0;0;0;0] input's leg position as 0,platform and base move up
 %correspondingly.
 %l_origin;
-translation=30000;
+translation=27500;
 l_new=l_new-l_origin+translation;
 new_p(3,:)=new_p(3,:)-l_origin+translation;
 b(3,:)=b(3,:)-l_origin+translation;

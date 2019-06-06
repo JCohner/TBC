@@ -34,18 +34,15 @@ class matlab_to_tiva():
 		self.eng.workspace['leg_5_value'] = 0
 		self.eng.workspace['leg_6_value'] = 0
 		self.eng.workspace['mode'] = 'False'
-		self.eng.workspace['connect'] = 0
+		self.eng.workspace['connect'] = 1
 
 	def run(self):
 		leg_length=self.read_leg_length()
-
-		while(True):
-			connect = self.eng.workspace['connect']
+		connect = self.eng.workspace['connect']
+		while(connect):			
 			if(bool(connect)):
 				mode = self.eng.workspace['mode']
-				if(mode == 'False'):
-					print("Prepare Desired Testing Mode!\n")
-				elif(mode == 'static'):
+				if(mode == 'static'):
 					begin_test_state = self.eng.workspace['begin_test_state']
 					if(begin_test_state==1):
 						new_leg_length=self.read_leg_length()
@@ -56,6 +53,7 @@ class matlab_to_tiva():
 					begin_test_state = self.eng.workspace['begin_test_state']
 					if(begin_test_state==1):
 						dynamic_demo_flag=self.eng.workspace['dynamic_demo_flag']
+						dynamic_one_degree_flag=self.eng.workspace['dynamic_one_degree_flag']
 						if (dynamic_demo_flag==1):
 							#load a dict contains matrix and time etc,here only grab the array part
 							matrix=self.eng.load('demo_dynamic_matrix.mat')
@@ -66,7 +64,7 @@ class matlab_to_tiva():
 								if(self.if_cancel()):
 									break
 								else:
-									self.move(matrix[i,:].tolist())
+									self.move(matrix[i,:])
 									time.sleep(0.2)
 							#set flag to 0 after execute demo dynamic
 							self.eng.workspace['dynamic_demo_flag'] = 0
@@ -76,9 +74,26 @@ class matlab_to_tiva():
 							matrix=matrix['demo2_dynamic_matrix']
 							matrix=np.asarray(matrix)
 							for i in range(matrix.shape[0]):
-								self.move(matrix[i,:])
-								time.sleep(0.2)	
+								if(self.if_cancel()):
+									break
+								else:
+									self.move(matrix[i,:])
+									time.sleep(0.2)	
 							self.eng.workspace['dynamic_demo_flag'] = 0
+						if (dynamic_one_degree_flag==1):
+							matrix=self.eng.workspace['dynamic_matrix']
+							matrix_vel=self.eng.workspace['dynamic_matrix_vel']
+							matrix=np.asarray(matrix)
+							matrix_vel=np.asarray(matrix_vel)
+							for i in range(matrix.shape[0]):
+								if(self.if_cancel()):
+									break
+								else:								
+									leg_length=matrix[i,:]
+									vel=matrix_vel[i,:]
+									self.move(leg_length,vel)
+							self.eng.workspace['dynamic_one_degree_flag'] = 0
+
 				elif(mode == 'waypoint'):
 					begin_test_state = self.eng.workspace['begin_test_state']
 					if(begin_test_state==1):
@@ -86,19 +101,26 @@ class matlab_to_tiva():
 						if (waypoints_matrix_flag==1):
 							matrix=self.eng.workspace['waypoints_matrix']
 							matrix=np.asarray(matrix)
-							print("waypoints_matrix",matrix)
-							print(type(matrix))
 							for i in range(matrix.shape[0]):
-								leg_length=matrix[i,0:5]
-								vel=matrix[i,6:11]
-								t2=matrix[i,12]
-								self.move(leg_length,vel)
-								time.sleep(t2)
+								if(self.if_cancel()):
+									break
+								else:								
+									leg_length=matrix[i,0:5]
+									vel=matrix[i,6:11]
+									t2=matrix[i,12]
+									self.move(leg_length,vel)
+									time.sleep(t2)
 							self.eng.workspace['waypoints_matrix_flag'] = 0
-
+				elif (mode == 'motor'):
+					begin_test_state = self.eng.workspace['begin_test_state']
+					if(begin_test_state==1):
+						new_leg_length=self.read_leg_length()
+						if(np.array_equal(leg_length, new_leg_length)):
+							self.move(new_leg_length)
 						
 			#refresh every 0.2s
 			time.sleep(0.2)
+			connect = self.eng.workspace['connect']
 
 	#read the matlab working space and return a np.array of shape (6,)
 	def read_leg_length(self):
@@ -110,19 +132,11 @@ class matlab_to_tiva():
 	#send six leg's position with velocities 
 	#Args:leg_length, vel
 	def move(self,leg_length,vel=None):
-		print("leg_length",leg_length)
-		print("leg_length.shape",leg_length.shape)
 		for i in range(6):
 			print(int(leg_length[i]))
 		# 	self.ser.write(str(int(leg_length[i])).encode())
 		# 	self.ser.write(b' ')
 		# self.ser.write(b'\n')
-
-			# for length in leg_length:
-			# print("length is",length)
-			# self.ser.write(str(int(length)).encode())
-			# self.ser.write(b' ')
-		#self.ser.write(b'\n')
 
 	def if_cancel(self):
 		connect = self.eng.workspace['connect']
