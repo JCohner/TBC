@@ -7,10 +7,10 @@ import matlab.engine
 class matlab_to_tiva():
 	def __init__(self):
 		#init serial port
-		# self.ser = serial.Serial()
-		# self.ser.baudrate = 115200
-		# self.ser.port = '/dev/tty.usbserial-DN062JGN' #Rename this to whatever port the device shows up as
-		# self.ser.open() #OPEN THIS FOR REAL TEST
+		self.ser = serial.Serial()
+		self.ser.baudrate = 115200
+		self.ser.port = '/dev/tty.usbserial-DN062JGN' #Rename this to whatever port the device shows up as
+		self.ser.open() #OPEN THIS FOR REAL TEST
 
 		#start matlab and init matlab working space
 		self.eng = matlab.engine.start_matlab('-desktop')
@@ -47,13 +47,14 @@ class matlab_to_tiva():
 					if(begin_test_state==1):
 						new_leg_length=self.read_leg_length()
 						#som leg length changed
-						if(np.array_equal(leg_length, new_leg_length)):
+						if(not(np.array_equal(leg_length, new_leg_length))):
 							if(self.if_out_of_range(new_leg_length)):
 								self.eng.workspace['out_of_range_flag'] = 1
 								print("there's leg length out of motor rail's range")
 							else:
 								vel=np.subtract(new_leg_length,leg_length)/2
 								self.move(new_leg_length,vel)
+								leg_length=new_leg_length
 				elif(mode == 'dynamic'):
 					begin_test_state = self.eng.workspace['begin_test_state']
 					if(begin_test_state==1):
@@ -74,6 +75,7 @@ class matlab_to_tiva():
 										#TODO:
 										break
 									else:
+										print("now it's waypoint %s" % i)
 										self.move(matrix[i,:])
 										time.sleep(0.2)
 								#set flag to 0 after execute demo dynamic
@@ -81,7 +83,8 @@ class matlab_to_tiva():
 						if (dynamic_demo_flag==2):
 							#load a dict contains matrix and time etc,here only grab the array part
 							matrix=self.eng.load('demo2_dynamic_matrix.mat')
-							matrix=matrix['demo2_dynamic_matrix']
+							print(matrix)
+							matrix=matrix['demo_dynamic_matrix']
 							matrix=np.asarray(matrix)
 							if(self.if_out_of_range(matrix)):
 								self.eng.workspace['out_of_range_flag'] = 1
@@ -91,6 +94,7 @@ class matlab_to_tiva():
 									if(self.if_cancel()):
 										break
 									else:
+										print("now it's waypoint %s" % i)
 										self.move(matrix[i,:])
 										time.sleep(0.2)	
 								self.eng.workspace['dynamic_demo_flag'] = 0
@@ -106,10 +110,12 @@ class matlab_to_tiva():
 								for i in range(matrix.shape[0]):
 									if(self.if_cancel()):
 										break
-									else:								
+									else:
+										print("now it's waypoint %s" % i)								
 										leg_length=matrix[i,:]
 										vel=matrix_vel[i,:]
 										self.move(leg_length,vel)
+										time.sleep(0.2)
 								self.eng.workspace['dynamic_one_degree_flag'] = 0
 
 				elif(mode == 'waypoint'):
@@ -126,9 +132,10 @@ class matlab_to_tiva():
 								for i in range(matrix.shape[0]):
 									if(self.if_cancel()):
 										break
-									else:								
-										leg_length=matrix[i,0:5]
-										vel=matrix[i,6:11]
+									else:	
+										print("now it's waypoint %s" % i)							
+										leg_length=matrix[i,0:6]
+										vel=matrix[i,6:12]
 										t2=matrix[i,12]
 										self.move(leg_length,vel)
 										time.sleep(t2)
@@ -137,7 +144,7 @@ class matlab_to_tiva():
 					begin_test_state = self.eng.workspace['begin_test_state']
 					if(begin_test_state==1):
 						new_leg_length=self.read_leg_length()
-						if(np.array_equal(leg_length, new_leg_length)):
+						if(not(np.array_equal(leg_length, new_leg_length))):
 							if(self.if_out_of_range(new_leg_length)):
 								self.eng.workspace['out_of_range_flag'] = 1
 								print("there's leg length out of motor rail's range")
@@ -152,17 +159,17 @@ class matlab_to_tiva():
 	def read_leg_length(self):
 		leg_length=np.array([self.eng.workspace['leg_1_value'],self.eng.workspace['leg_2_value']
 		,self.eng.workspace['leg_3_value'],self.eng.workspace['leg_4_value'],self.eng.workspace['leg_5_value'],self.eng.workspace['leg_6_value']])
-		print("leg_length:",leg_length)
 		return leg_length
 
 	#send six leg's position with velocities 
 	#Args:leg_length, vel
 	def move(self,leg_length,vel=None):
 		for i in range(6):
-			print(int(leg_length[i]))
-		# 	self.ser.write(str(int(leg_length[i])).encode())
-		# 	self.ser.write(b' ')			
-		# self.ser.write(b'\n')
+			print("leg_length %s %s" %(i,int(leg_length[i])))
+			#print("leg_vel %s %s" %(i,int(vel[i])))
+			self.ser.write(str(int(leg_length[i])).encode())
+			self.ser.write(b' ')			
+		self.ser.write(b'\n')
 
 	def if_cancel(self):
 		connect = self.eng.workspace['connect']

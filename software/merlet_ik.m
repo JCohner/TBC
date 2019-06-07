@@ -26,10 +26,10 @@ input(6)=input(6)*micron_num;
 
 %configuration suppose the center of platform be the origin of world frame
 r_platform = 50000; %50000;%platform radius
-d_joint_plaform = 60000/2;%57150/2;;%17780/2;%distance of adjacent joint on platform
+d_joint_plaform = 57150/2;%17780/2;%distance of adjacent joint on platform
 r_base = 80000;%80000;%base radius
-d_joint_base = 60000/2;%57150/2;%60000/2;
-c = 127000;%132500;%70000; %length of linkage
+d_joint_base = 57150/2;%60000/2;
+c = 132500;%70000; %length of linkage
 %home_position = 0
 base_z=-170000;%z_coordinate of base, dist platform to base
 
