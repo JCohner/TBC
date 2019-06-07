@@ -35,7 +35,7 @@ A=Dynamic_var_A;
 f=Dynamic_var_Hz;
 T=1/f;
 %No matter how frequency changes, for one period, only sample 100 points. 
-waypoints_num=100;
+waypoints_num=T*16;
 time_interval=T/waypoints_num;
 %dynamic_matrix and dynamic_matrix_vel first to be 6*waypoints_num, transpose them at last 
 dynamic_matrix=zeros(6,waypoints_num);
@@ -51,6 +51,7 @@ prev_l_new=[1,1,1,1,1,1]*15000;
 inputs=[0;0;0;0;0;0];
 for t=1:waypoints_num
     inputs(w_index) =  A * sin(2*pi*t/waypoints_num);
+    inputs(2) =  A * cos(2*pi*t/waypoints_num);
     [new_p, b, l_new] = merlet_ik(inputs);
     dynamic_matrix_l_new(:,t)=l_new;
     dynamic_matrix_new_p(:,:,t)=new_p;

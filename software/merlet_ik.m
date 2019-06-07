@@ -135,29 +135,5 @@ angle_max_value =  max(angle);
 end
 
 
-% for plot, but not used anymore
-function merlet_plot(new_p,l_new,b)
-%plot
-%platform
 
-p_plot=[new_p new_p(:,1)];
-plot3(p_plot(1,:),p_plot(2,:),p_plot(3,:));
-hold on
-%joint
-joint_pos = b;
-joint_pos(3,:)=l_new;
-joint_plot = [joint_pos joint_pos(:,1)];
-plot3(joint_plot(1,:),joint_plot(2,:),joint_plot(3,:));
-hold on
-%base
-b_plot=[b b(:,1)];
-plot3(b_plot(1,:),b_plot(2,:),b_plot(3,:));
-hold on
-%link three hexagon
-for i=1:6
-    link_plot = [new_p(:,i) joint_pos(:,i) b(:,i)];
-    plot3(link_plot(1,:),link_plot(2,:),link_plot(3,:));
-    hold on
-end
-hold off
-end
+
