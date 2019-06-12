@@ -1,0 +1,1 @@
+"./TBCMainController.obj" "./TBCUART.obj" "./main.obj" "./tm4c1231h6pm_startup_ccs.obj" "./uartstdio.obj" "../tm4c1231h6pm.cmd" -llibc.a -l"C:/ti/tivaware_c_series_2_1_4_178/driverlib/ccs/Debug/driverlib.lib" 
